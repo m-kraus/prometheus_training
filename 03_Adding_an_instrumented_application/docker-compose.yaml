@@ -1,0 +1,70 @@
+version: "3.5"
+
+networks:
+  public: {}
+
+volumes:
+  grafana_data: {}
+  prometheus_data: {}
+  minio_data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.8.1
+    ports:
+      - 19090:9090
+    networks:
+      - public
+    volumes:
+      - prometheus_data:/prometheus
+      - ./config/prometheus:/etc/prometheus
+    command:
+      - --web.listen-address=0.0.0.0:9090
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+      - --log.level=info
+
+  grafana:
+    image: grafana/grafana:6.1.2
+    ports:
+      - 13000:3000
+    networks:
+      - public
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=pass
+      - GF_PATHS_PROVISIONING=/provisioning
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_LOG_LEVEL=warn
+
+  node-exporter:
+    image: prom/node-exporter:v0.17.0
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+    ports:
+      - 19100:9100
+    networks:
+      - public
+
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - minio_data:/export
+    ports:
+      - 19000:9000
+    environment:
+      - "MINIO_ACCESS_KEY=key"
+      - "MINIO_SECRET_KEY=secretkey"
+    entrypoint: sh
+    command: -c 'mkdir -p /export/bucket001 && mkdir -p /export/bucket002 && mkdir -p /export/bucket003 && /usr/bin/minio server /export'
+    networks:
+      - public

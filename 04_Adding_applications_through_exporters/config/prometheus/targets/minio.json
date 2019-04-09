@@ -1,0 +1,11 @@
+[
+  {
+    "targets": [
+      "minio:9000"
+    ],
+    "labels": {
+      "job": "minio",
+      "__metrics_path__": "/minio/prometheus/metrics"
+    }
+  }
+]

@@ -1,0 +1,111 @@
+version: "3.5"
+
+networks:
+  public: {}
+
+volumes:
+  grafana_data: {}
+  prometheus_data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.8.1
+    #user: root
+    ports:
+      - 9090:9090
+    networks:
+      - public
+    volumes:
+      - prometheus_data:/prometheus
+      - ./config/prometheus:/etc/prometheus
+    command:
+      - --web.listen-address=0.0.0.0:9090
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+      - --log.level=warn
+      # theses settings are for thanos
+      #- --web.enable-admin-api
+      #- --storage.tsdb.retention.time=6h
+      #- --storage.tsdb.min-block-duration=2h
+      #- --storage.tsdb.max-block-duration=2h
+
+  grafana:
+    image: grafana/grafana:6.1.2
+    ports:
+      - 3000:3000
+    networks:
+      - public
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/provisioning:/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=pass
+      - GF_PATHS_PROVISIONING=/provisioning
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_LOG_LEVEL=warn
+
+  node-exporter:
+    image: prom/node-exporter:v0.17.0
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+    ports:
+      - 19100:9100
+    networks:
+      - public
+
+  minio:
+    image: minio/minio:latest
+    volumes:
+      - minio_data:/export
+    ports:
+      - 19000:9000
+    environment:
+      - "MINIO_ACCESS_KEY=key"
+      - "MINIO_SECRET_KEY=secretkey"
+    entrypoint: sh
+    command: -c 'mkdir -p /export/bucket001 && mkdir -p /export/bucket002 && mkdir -p /export/bucket003 && /usr/bin/minio server /export'
+    networks:
+      - public
+
+  redis-server:
+    image: redis:5.0.4-alpine
+    ports:
+      - 16379:6379
+    networks:
+      - public
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v0.32.0
+    ports:
+      - 19121:9121
+    networks:
+      - public
+    command:
+      - '--redis.addr=redis://redis-server:6379'
+
+  alertmanager:
+    image: prom/alertmanager:v0.16.2
+    ports:
+      - 9093:9093
+    networks:
+      - public
+    command:
+      - --log.level=info
+      - --config.file=/etc/alertmanager/alertmanager.yml
+    volumes:
+      - ./config/alertmanager:/etc/alertmanager
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.0
+    ports:
+      - 1025:1025 # SMTP
+      - 8025:8025 # HTTP
+    networks:
+      - public

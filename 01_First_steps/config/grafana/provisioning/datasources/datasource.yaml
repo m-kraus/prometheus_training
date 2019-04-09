@@ -1,0 +1,17 @@
+apiVersion: 1
+datasources:
+- name: prometheus
+  type: prometheus
+  access: proxy
+  org_id: 1
+  url: http://prometheus:9090
+  password:
+  user:
+  database:
+  basic_auth:
+  basic_auth_user:
+  basic_auth_password:
+  with_credentials:
+  is_default: false
+  version: 1
+  editable: true

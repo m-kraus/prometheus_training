@@ -1,0 +1,10 @@
+[
+  {
+    "targets": [
+      "localhost:9090"
+    ],
+    "labels": {
+      "job": "prometheus"
+    }
+  }
+]
