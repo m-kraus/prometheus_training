@@ -9,7 +9,7 @@ route:
   # The root route must not have any matchers as it is the entry point for
   # all alerts. It needs to have a receiver configured so alerts that do not
   # match any of the sub-routes are sent to someone.
-  receiver: "unmatched-default-root-route"
+  receiver: "default-root-route"
 
   # When a new group of alerts is created by an incoming alert, wait at
   # least 'group_wait' to send the initial notification.
@@ -18,8 +18,27 @@ route:
   # notification.
   group_wait: 30s
 
+  routes:
+  - receiver: 'eventmanagement'
+    group_by: ['alertname']
+    # As it is intended to forward events to some kind of eventmanagement here, we do not goup anything
+    # instead we send all alerts grouped by alertname and repeat this every hour.
+    group_wait: 0s
+    group_interval: 1s
+    repeat_interval: 1h
+    match_re:
+      # This route is used, when an alert has an "incident_receiver" label that is not empty.
+      incident_receiver: ^(.+)$
+
 receivers:
-  - name: "unmatched-default-root-route"
+  - name: "default-root-route"
+    # We send email to the configured smtp_smarthost
     email_configs:
       - to: "devopsteam@example.org"
+        send_resolved: true
+
+  - name: 'eventmanagement'
+    # This is an example of calling an arbitrary webhook
+    webhook_configs:
+      - url: 'http://eventmanagement:9999'
         send_resolved: true
