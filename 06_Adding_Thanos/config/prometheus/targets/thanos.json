@@ -1,0 +1,26 @@
+[
+  {
+    "targets": [
+      "thanos-sidecar:10902"
+    ],
+    "labels": {
+      "job": "thanos-sidecar"
+    }
+  },
+  {
+    "targets": [
+      "thanos-store:10902"
+    ],
+    "labels": {
+      "job": "thanos-store"
+    }
+  },
+  {
+    "targets": [
+      "thanos-query:10902"
+    ],
+    "labels": {
+      "job": "thanos-query"
+    }
+  }
+]

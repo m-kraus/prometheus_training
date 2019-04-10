@@ -1,0 +1,10 @@
+[
+  {
+    "targets": [
+      "grafana:3000"
+    ],
+    "labels": {
+      "job": "grafana"
+    }
+  }
+]

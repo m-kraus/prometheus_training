@@ -10,7 +10,6 @@ volumes:
 services:
   prometheus:
     image: prom/prometheus:v2.8.1
-    #user: root
     ports:
       - 19090:9090
     networks:
@@ -24,11 +23,6 @@ services:
       - --storage.tsdb.path=/prometheus
       - --web.enable-lifecycle
       - --log.level=info
-      # theses settings are for thanos
-      #- --web.enable-admin-api
-      #- --storage.tsdb.retention.time=6h
-      #- --storage.tsdb.min-block-duration=2h
-      #- --storage.tsdb.max-block-duration=2h
 
   grafana:
     image: grafana/grafana:6.1.2
