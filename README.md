@@ -6,17 +6,50 @@ Requirements: you need to have ```docker``` and ```docker-compose``` installed (
 
 ## Diagrams
 
+### 01_First_steps
+
 ![01_First_steps](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/01_First_steps/01.svg?sanitize=true)
+
+This first step configures a Prometheus instance, that monitorins itself and a Grafana instance, which is connected to Prometheus.
+
+See https://prometheus.io/docs/prometheus/latest/configuration/configuration for Prometheus basic configuration options.
+
+### 02_Adding_node-exporter
 
 ![02_Adding_node-exporter](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/02_Adding_node-exporter/02.svg?sanitize=true)
 
+In this step we add node-exporter (https://github.com/prometheus/node_exporter), which is the de-facto standard to pull in system-level metrics of Linux and Unix based machines.
+For Windows machines the wmi-exporter can be used (https://github.com/martinlindhe/wmi_exporter).
+
+In this step we also change Prometheus configuration to use file-based service dicovery (https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config) using the directory ```config/prometheus/targets/```, which makes it possible to add or remove scrape targets on the fly, without the need to restart Prometheus.
+
+### 03_Adding_an_instrumented_application
+
 ![03_Adding_an_instrumented_application](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/03_Adding_an_instrumented_application/03.svg?sanitize=true)
+
+In this step we add Minio (https://min.io/) - an open-source S3-compatible storage - as an example of applications, which are already instrumented to deliver Prometheus metrics. Applications of this type offer an HTTP endpoint from which metrics can be scraped.
+
+### 04_Adding_applications_through_exporters
 
 ![04_Adding_applications_through_exporters](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/04_Adding_applications_through_exporters/04.svg?sanitize=true)
 
+Now we add Redis (https://redis.io/) to the mix. Redis does not offer Prometehus metrics by itself, it needs an exporter as an itermediate piece, in this case https://github.com/oliver006/redis_exporter . This exporter "knows" how to query Redis for useful metrics, turns them into a Prometheus-comaptible format and provides and HTTP endpoint to scrape from.
+
+### 05_Alerting
+
 ![05_Alerting](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/05_Alerting/05.svg?sanitize=true)
 
+We now add alerting to our setup. Prometheus itself evaluates "alert rules" (https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/). If an alert is "firing" it forwards it to the Alertmanager (https://prometheus.io/docs/alerting/alertmanager/). The Alertmanager can route, group, deduplicate or silence alerts to different targets, e.g. mail, Slack or Pagerduty.
+
+There is a pseudo-mail-server configured in this session to see how genereated mail alerts look like.
+
+An alert rule for Redis is configured in ```confog/prometheus/redis.rules```. When we stop the Redis-server using ```docker-compose -p training stop redis-server``` we will see an alert firing in Prometheus, being forwarded to the Alertmanager and then snet out by mail.
+
+### 06_Adding_Thanos
+
 ![06_Adding_Thanos](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/06_Adding_Thanos/06.svg?sanitize=true)
+
+Our last step is to add Thanos (https://github.com/improbable-eng/thanos) to the session. Thanos adds easy long-term-storage - e.g. to Amazon S3 - to Prometheus, as well as HA capabilities and possibilites to group multiple Prometheus instances into a fleet-wide overview. See https://github.com/m-kraus/prometheus_experiments/tree/master/thanos for a more detailed setup.
 
 ## Accessing the components
 
