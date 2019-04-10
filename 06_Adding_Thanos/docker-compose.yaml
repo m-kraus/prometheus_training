@@ -156,7 +156,7 @@ services:
   alertmanager:
     image: prom/alertmanager:v0.16.2
     ports:
-      - 9093:9093
+      - 19093:9093
     networks:
       - public
     command:
@@ -168,7 +168,7 @@ services:
   mailhog:
     image: mailhog/mailhog:v1.0.0
     ports:
-      - 1025:1025 # SMTP
-      - 8025:8025 # HTTP
+      - 11025:1025 # SMTP
+      - 18025:8025 # HTTP
     networks:
       - public
