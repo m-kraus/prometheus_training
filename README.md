@@ -16,7 +16,7 @@ See https://prometheus.io/docs/prometheus/latest/configuration/configuration for
 
 ### 02_Adding_node-exporter
 
-![02_Adding_node-exporter](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/images-exporter/02.svg?sanitize=true)
+![02_Adding_node-exporter](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/images/02.svg?sanitize=true)
 
 In this step we add node-exporter (https://github.com/prometheus/node_exporter), which is the de-facto standard to pull in system-level metrics of Linux and Unix based machines.
 For Windows machines the wmi-exporter can be used (https://github.com/martinlindhe/wmi_exporter).
