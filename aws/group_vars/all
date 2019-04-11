@@ -1,0 +1,8 @@
+aws_ami_user: ec2-user
+instance_type: t3.small
+security_group: prometheus_training
+image: ami-0ab1db011871746ef 
+keypair: prometheus_training 
+region: eu-central-1
+docker_compose_version: 1.24.0
+docker_compose_path: /usr/local/bin/docker-compose

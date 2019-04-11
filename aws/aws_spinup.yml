@@ -1,0 +1,124 @@
+---
+- name: Provision prometheus_training AWS resources
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars:
+    count: 1
+  vars_files:
+    - aws_keys.yml
+
+  tasks:
+  - name: Create a security group
+    ec2_group:
+      name: "{{ security_group }}"
+      description: "{{ security_group }}"
+      region: "{{ region }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      rules:
+        - proto: tcp
+          from_port: 22
+          to_port: 22
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 19090
+          to_port: 19090
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 10902
+          to_port: 10902
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 11902
+          to_port: 11902
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 12902
+          to_port: 12902
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 13000
+          to_port: 13000
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 19100
+          to_port: 19100
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 19000
+          to_port: 19000
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 19121
+          to_port: 19121
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 19093
+          to_port: 19093
+          cidr_ip: 0.0.0.0/0
+        - proto: tcp
+          from_port: 18025
+          to_port: 18025
+          cidr_ip: 0.0.0.0/0
+      rules_egress:
+        - proto: all
+          cidr_ip: 0.0.0.0/0
+
+  - name: Launch the new EC2 Instance
+    ec2:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      group: "{{ security_group }}"
+      instance_type: "{{ instance_type }}"
+      image: "{{ image }}"
+      wait: true 
+      region: "{{ region }}"
+      keypair: "{{ keypair }}"
+      count: "{{count}}"
+    register: ec2
+
+  - name: Add tag to Instance(s)
+    ec2_tag:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      resource: "{{ item.id }}" 
+      region: "{{ region }}" 
+      state: "present"
+    with_items: "{{ ec2.instances }}"
+    args:
+      tags:
+        owner: krausm
+        type: prometheus_training
+
+  - name: Wait for SSH to come up
+    wait_for:
+      host: "{{ item.public_ip }}"
+      port: 22 
+      delay: 60
+      timeout: 120
+      state: started 
+    with_items: "{{ ec2.instances }}"
+
+  - name: Add the newly created host so that we can further contact it
+    add_host:
+      name: "{{ item.public_ip }}"
+      private_ip: "{{ item.private_ip }}"
+      public_ip: "{{ item.public_ip }}"
+      groups: training
+      ansible_user: "{{ aws_ami_user }}"
+      ansible_ssh_private_key_file: "./{{ keypair }}.pem"
+    with_items: "{{ ec2.instances }}"
+
+- name: Configure prometheus_training instances
+  hosts: training
+  remote_user: "{{ aws_ami_user }}"
+  become: yes
+  gather_facts: no
+
+  tasks:
+  - include_tasks: ./provision.yml

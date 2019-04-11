@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <link rel="stylesheet" href="pandoc.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="prometheus-training-sessions">Prometheus training sessions</h1>
+<p>This repository contains step-by-step training sessions for learning Prometheus.</p>
+<p>Requirements: you need to have <code>docker</code> and <code>docker-compose</code> installed (e.g. by installing Docker Desktop https://www.docker.com/products/docker-desktop) and are able to access https://hub.docker.com/</p>
+<h2 id="diagrams">Diagrams</h2>
+<h3 id="first_steps">01_First_steps</h3>
+<figure>
+<img src="images/01.svg" alt="01_First_steps" /><figcaption>01_First_steps</figcaption>
+</figure>
+<p>This first step configures a Prometheus instance, that monitorins itself and a Grafana instance, which is connected to Prometheus.</p>
+<p>See https://prometheus.io/docs/prometheus/latest/configuration/configuration for Prometheus basic configuration options.</p>
+<h3 id="adding_node-exporter">02_Adding_node-exporter</h3>
+<figure>
+<img src="images/02.svg" alt="02_Adding_node-exporter" /><figcaption>02_Adding_node-exporter</figcaption>
+</figure>
+<p>In this step we add node-exporter (https://github.com/prometheus/node_exporter), which is the de-facto standard to pull in system-level metrics of Linux and Unix based machines. For Windows machines the wmi-exporter can be used (https://github.com/martinlindhe/wmi_exporter).</p>
+<p>In this step we also change Prometheus configuration to use file-based service dicovery (https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config) using the directory <code>config/prometheus/targets/</code>, which makes it possible to add or remove scrape targets on the fly, without the need to restart Prometheus.</p>
+<h3 id="adding_an_instrumented_application">03_Adding_an_instrumented_application</h3>
+<figure>
+<img src="images/03.svg" alt="03_Adding_an_instrumented_application" /><figcaption>03_Adding_an_instrumented_application</figcaption>
+</figure>
+<p>In this step we add Minio (https://min.io/) - an open-source S3-compatible storage - as an example of applications, which are already instrumented to deliver Prometheus metrics. Applications of this type offer an HTTP endpoint from which metrics can be scraped.</p>
+<h3 id="adding_applications_through_exporters">04_Adding_applications_through_exporters</h3>
+<figure>
+<img src="images/04.svg" alt="04_Adding_applications_through_exporters" /><figcaption>04_Adding_applications_through_exporters</figcaption>
+</figure>
+<p>Now we add Redis (https://redis.io/) to the mix. Redis does not offer Prometehus metrics by itself, it needs an exporter as an itermediate piece, in this case https://github.com/oliver006/redis_exporter . This exporter “knows” how to query Redis for useful metrics, turns them into a Prometheus-comaptible format and provides and HTTP endpoint to scrape from.</p>
+<h3 id="alerting">05_Alerting</h3>
+<figure>
+<img src="images/05.svg" alt="05_Alerting" /><figcaption>05_Alerting</figcaption>
+</figure>
+<p>We now add alerting to our setup. Prometheus itself evaluates “alert rules” (https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/). If an alert is “firing” it forwards it to the Alertmanager (https://prometheus.io/docs/alerting/alertmanager/). The Alertmanager can route, group, deduplicate or silence alerts to different targets, e.g. mail, Slack or Pagerduty.</p>
+<p>There is a pseudo-mail-server configured in this session to see how genereated mail alerts look like.</p>
+<p>An alert rule for Redis is configured in <code>confog/prometheus/redis.rules</code>. When we stop the Redis-server using <code>docker-compose -p training stop redis-server</code> we will see an alert firing in Prometheus, being forwarded to the Alertmanager and then snet out by mail.</p>
+<h3 id="adding_thanos">06_Adding_Thanos</h3>
+<figure>
+<img src="images/06.svg" alt="06_Adding_Thanos" /><figcaption>06_Adding_Thanos</figcaption>
+</figure>
+<p>Our next step is to add Thanos (https://github.com/improbable-eng/thanos) to the session. Thanos adds easy long-term-storage - e.g. to Amazon S3 - to Prometheus, as well as HA capabilities and possibilites to group multiple Prometheus instances into a fleet-wide overview. See https://github.com/m-kraus/prometheus_experiments/tree/master/thanos for a more detailed setup.</p>
+<h3 id="dns_service_discovery">07_DNS_service_discovery</h3>
+<figure>
+<img src="images/07.svg" alt="07_DNS_service_discovery" /><figcaption>07_DNS_service_discovery</figcaption>
+</figure>
+<p>In the last step we will get to know how (DNS-)service discovary works. We took node-exporter out of the file_sd targets in <code>config/prometheus/targets</code> and added a <code>dns_sd_configs</code> section in the Prometheus configuration file <code>config/prometheus/prometheus.yml</code></p>
+<p>We search for DNS A records with the value <code>node-exporter</code>. After starting the session, Prometheus discovers one node-exporter. After scaling it to multiple replicas with <code>docker-compose -p training scale node-exporter=3</code> Prometheus will discover after a short time all 3 instances and scrape them separately.</p>
+<h2 id="accessing-the-components">Accessing the components</h2>
+<p>You can click on the components in the diagrams above.</p>
+<p>For minio use the credentials <code>key:secretkey</code>. For Grafana use the credentials <code>admin:pass</code>.</p>
+<h2 id="useful-commands">Useful commands</h2>
+<h3 id="starting-a-training-session">Starting a training session</h3>
+<pre><code>cd YOUR_DESIRED_LESSON
+docker-compose -p training up</code></pre>
+<h3 id="stopping-a-training-session">Stopping a training session</h3>
+<pre><code>docker-compose -p training down</code></pre>
+<h3 id="stopping-the-redis-server">Stopping the Redis server</h3>
+<pre><code>docker-compose -p training stop redis-server</code></pre>
+<h3 id="sending-sighup-to-a-container">Sending SIGHUP to a container</h3>
+<pre><code>docker kill --signal=HUP &lt;container_id&gt;</code></pre>
+<h3 id="cleaning-up-after-the-last-session">Cleaning up after the last session</h3>
+<pre><code>docker-compose -p training down -v</code></pre>
+</body>
+</html>

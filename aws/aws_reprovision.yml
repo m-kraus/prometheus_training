@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  connection: local
+  vars_files:
+    - aws_keys.yml
+
+  tasks:
+  - name: Gather ec2 instances
+    ec2_instance_facts:
+      region: "{{ region }}"
+      filters:
+        instance-state-name: running
+        "tag:type": "prometheus_training"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+    register: ec2
+
+  - name: Wait for SSH to come up
+    wait_for:
+      host: "{{ item.public_ip_address }}"
+      port: 22 
+      #delay: 60
+      timeout: 120
+      state: started 
+    with_items: "{{ ec2.instances }}"
+
+  - name: Add the newly created host so that we can further contact it
+    add_host:
+      name: "{{ item.public_ip_address }}"
+      private_ip: "{{ item.private_ip_address }}"
+      public_ip: "{{ item.public_ip_address }}"
+      groups: training
+      ansible_user: "{{ aws_ami_user }}"
+      ansible_ssh_private_key_file: "./{{ keypair }}.pem"
+    with_items: "{{ ec2.instances }}"
+
+- name: Configure prometheus_training instances
+  hosts: training
+  remote_user: "{{ aws_ami_user }}"
+  become: yes
+  gather_facts: no
+
+  tasks:
+  - include_tasks: ./provision.yml

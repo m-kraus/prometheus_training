@@ -1,0 +1,80 @@
+---
+- debug: msg="Provisioning ec2 instance {{ public_ip }}"
+
+- name: Install Docker Compose
+  get_url:
+    url: https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-Linux-x86_64
+    dest: "{{ docker_compose_path }}"
+    mode: 0755
+
+- name: Install packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - httpd
+    - unzip
+
+- name: Enable and start Apache
+  service:
+    name: httpd
+    enabled: yes
+    state: started
+
+- name: Ensure needed directories exist
+  file:
+    dest: "/var/www/html/images"
+    state: directory
+
+- name: Ensure needed directories exist
+  file:
+    dest: "/home/{{ aws_ami_user }}/prometheus_training"
+    state: directory
+    owner: "{{ aws_ami_user }}"
+    group: "{{ aws_ami_user }}"
+
+- name: Get 
+  unarchive:
+    src: https://github.com/m-kraus/prometheus_training/archive/master.tar.gz
+    dest: "/home/{{ aws_ami_user }}/prometheus_training"
+    extra_opts: [--strip-components=1]
+    owner: "{{ aws_ami_user }}"
+    group: "{{ aws_ami_user }}"
+    remote_src: yes
+
+- name: Copy README files
+  copy:
+    src: "/home/{{ aws_ami_user }}/prometheus_training/aws/{{ item }}"
+    dest: "/var/www/html/{{ item }}"
+    remote_src: yes
+  with_items:
+    - index.html
+    - pandoc.css
+
+- name: Copy README images
+  copy:
+    src: "/home/{{ aws_ami_user }}/prometheus_training/images/{{ item }}"
+    dest: "/var/www/html/images/{{ item }}"
+    remote_src: yes
+  with_items:
+    - 01.svg
+    - 02.svg
+    - 03.svg
+    - 04.svg
+    - 05.svg
+    - 06.svg
+    - 07.svg
+
+- name: 
+  replace:
+    path: "/var/www/html/images/{{ item }}"
+    regexp: 'localhost:'
+    replace: "{{ public_ip }}:"
+  with_items:
+    - 01.svg
+    - 02.svg
+    - 03.svg
+    - 04.svg
+    - 05.svg
+    - 06.svg
+    - 07.svg
