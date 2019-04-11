@@ -1,8 +1,6 @@
 ---
 - hosts: localhost
   connection: local
-  vars:
-    region: eu-central-1
   vars_files:
     - aws_keys.yml
 
