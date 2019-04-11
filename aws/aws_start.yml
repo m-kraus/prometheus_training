@@ -9,16 +9,16 @@
     ec2_instance_facts:
       region: "{{ region }}"
       filters:
-        #instance-state-name: running
+        instance-state-name: stopped
         "tag:type": "prometheus_training"
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
     register: ec2
 
-  - name: Terminate ec2 instances
+  - name: Start stopped ec2 instances
     ec2:
       instance_ids: '{{ item.instance_id }}'
-      state: absent
+      state: running
       wait: true
       region: "{{ region }}"
       aws_access_key: "{{ aws_access_key }}"

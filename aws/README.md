@@ -6,5 +6,6 @@
 aws_access_key: MY_ACCESS_KEY
 aws_secret_key: MY_SECRET_KEY
 ```
-
 3. Rebuild index page from README: ```pandoc -s -c pandoc.css ../README.md -o index.html```
+
+4. Run a playbook ```ansible-playbook --ask-vault-pass aws_spinup.yml```

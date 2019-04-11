@@ -122,3 +122,4 @@
 
   tasks:
   - include_tasks: ./provision.yml
+  - include_tasks: ./training.yml
