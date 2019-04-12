@@ -1,5 +1,5 @@
 {% for host in groups['training'] %}
-ssh -i prometheus_training {{ aws_ami_user }}@{{ host }}
+ssh -i prometheus_training.pem {{ aws_ami_user }}@{{ host }}
 http://{{ host }}
 
 {% endfor %}
