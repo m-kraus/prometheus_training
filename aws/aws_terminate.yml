@@ -24,3 +24,11 @@
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
     with_items: "{{ ec2.instances }}"
+
+  - name: Remove security group
+    ec2_group:
+      name: "{{ security_group }}"
+      region: "{{ region }}"
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      state: absent
