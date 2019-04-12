@@ -1,3 +1,4 @@
 aws_kays.yml
 *.pem
 *.retry
+connection.txt

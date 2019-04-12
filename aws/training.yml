@@ -56,3 +56,10 @@
     - 05.svg
     - 06.svg
     - 07.svg
+
+- name: Provide docs with correct addresses
+  become: no
+  template:
+    src: connection.j2
+    dest: connection.txt
+  delegate_to: localhost
