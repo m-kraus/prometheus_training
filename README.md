@@ -35,6 +35,26 @@ In this step we add Minio (https://min.io/) - an open-source S3-compatible stora
 
 Now we add Redis (https://redis.io/) to the mix. Redis does not offer Prometehus metrics by itself, it needs an exporter as an itermediate piece, in this case https://github.com/oliver006/redis_exporter . This exporter "knows" how to query Redis for useful metrics, turns them into a Prometheus-comaptible format and provides and HTTP endpoint to scrape from.
 
+#### Suggested reading on PromQL:
+
+- https://prometheus.io/docs/prometheus/latest/querying/examples/
+
+- https://timber.io/blog/promql-for-humans/
+
+- https://www.section.io/blog/prometheus-querying/
+
+- https://kausal.co/blog/prometheus-histograms-multiple-queries/
+
+- https://de.slideshare.net/weaveworks/promql-deep-dive-the-prometheus-query-language
+
+#### Suggested reading on relabeling:
+
+- https://www.robustperception.io/relabelling-can-discard-targets-timeseries-and-alerts
+
+- https://medium.com/quiq-blog/prometheus-relabeling-tricks-6ae62c56cbda
+
+- Kubernetes example with lots of relabeling: https://raw.githubusercontent.com/prometheus/prometheus/master/documentation/examples/prometheus-kubernetes.yml
+
 ### 05_Alerting
 
 ![05_Alerting](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/images/05.svg?sanitize=true)

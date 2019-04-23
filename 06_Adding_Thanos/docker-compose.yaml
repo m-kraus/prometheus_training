@@ -13,7 +13,7 @@ services:
   prometheus:
     depends_on:
       - thanos-sidecar
-    image: prom/prometheus:v2.8.1
+    image: prom/prometheus:v2.9.1
     # Set user to root, otherwise shared tsdb directory is not readable by one of the instances
     user: root
     ports:
@@ -94,7 +94,7 @@ services:
       - 12902:10902
 
   grafana:
-    image: grafana/grafana:6.1.2
+    image: grafana/grafana:6.1.4
     ports:
       - 13000:3000
     networks:
