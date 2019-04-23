@@ -9,7 +9,6 @@
     ec2_instance_facts:
       region: "{{ region }}"
       filters:
-        #instance-state-name: running
         "tag:type": "prometheus_training"
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
@@ -27,7 +26,7 @@
 
   - name: Remove security group
     ec2_group:
-      name: "{{ security_group }}"
+      name: "prometheus_training"
       region: "{{ region }}"
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"

@@ -1,18 +1,16 @@
 ---
-- name: Provision prometheus_training AWS resources
+- name: Spinup prometheus_training AWS resources
   hosts: localhost
   connection: local
   gather_facts: False
-  vars:
-    count: 1
   vars_files:
     - aws_keys.yml
 
   tasks:
   - name: Create a security group
     ec2_group:
-      name: "{{ security_group }}"
-      description: "{{ security_group }}"
+      name: "prometheus_training"
+      description: "prometheus_training"
       region: "{{ region }}"
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
@@ -73,13 +71,13 @@
     ec2:
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
-      group: "{{ security_group }}"
+      group: "prometheus_training"
       instance_type: "{{ instance_type }}"
       image: "{{ image }}"
       wait: true 
       region: "{{ region }}"
-      keypair: "{{ keypair }}"
-      count: "{{count}}"
+      keypair: "prometheus_training"
+      count: "{{ count }}"
     register: ec2
 
   - name: Add tag to Instance(s)
@@ -111,7 +109,7 @@
       public_ip: "{{ item.public_ip }}"
       groups: training
       ansible_user: "{{ aws_ami_user }}"
-      ansible_ssh_private_key_file: "./{{ keypair }}.pem"
+      ansible_ssh_private_key_file: "./prometheus_training.pem"
     with_items: "{{ ec2.instances }}"
 
 - name: Configure prometheus_training instances
