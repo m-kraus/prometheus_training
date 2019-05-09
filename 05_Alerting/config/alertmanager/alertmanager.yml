@@ -16,6 +16,7 @@ route:
   # This way ensures that you get multiple alerts for the same group that start
   # firing shortly after another are batched together on the first
   # notification.
+  group_by: ['alertname']
   group_wait: 30s
 
   routes:

@@ -10,7 +10,7 @@ volumes:
 
 services:
   prometheus:
-    image: prom/prometheus:v2.9.1
+    image: prom/prometheus:v2.9.2
     ports:
       - 19090:9090
     networks:
@@ -26,7 +26,7 @@ services:
       - --log.level=info
 
   grafana:
-    image: grafana/grafana:6.1.4
+    image: grafana/grafana:6.1.6
     ports:
       - 13000:3000
     networks:
@@ -86,7 +86,7 @@ services:
       - '--redis.addr=redis://redis-server:6379'
 
   alertmanager:
-    image: prom/alertmanager:v0.16.2
+    image: prom/alertmanager:v0.17.0
     ports:
       - 19093:9093
     networks:
