@@ -10,7 +10,7 @@ volumes:
 
 services:
   prometheus:
-    image: prom/prometheus:v2.9.2
+    image: prom/prometheus:v2.14.0
     ports:
       - 19090:9090
     networks:
@@ -26,7 +26,7 @@ services:
       - --log.level=info
 
   grafana:
-    image: grafana/grafana:6.1.6
+    image: grafana/grafana:6.5.1
     ports:
       - 13000:3000
     networks:
@@ -42,21 +42,21 @@ services:
       - GF_LOG_LEVEL=warn
 
   node-exporter:
-    image: prom/node-exporter:v0.17.0
+    image: prom/node-exporter:v0.18.1
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
     ports:
       - 19100:9100
     networks:
       - public
 
   minio:
-    image: minio/minio:latest
+    image: minio/minio
     volumes:
       - minio_data:/export
     ports:
