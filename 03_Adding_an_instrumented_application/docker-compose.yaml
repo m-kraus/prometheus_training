@@ -64,6 +64,7 @@ services:
     environment:
       - "MINIO_ACCESS_KEY=key"
       - "MINIO_SECRET_KEY=secretkey"
+      - "MINIO_PROMETHEUS_AUTH_TYPE=public"
     entrypoint: sh
     command: -c 'mkdir -p /export/bucket001 && mkdir -p /export/bucket002 && mkdir -p /export/bucket003 && /usr/bin/minio server /export'
     networks:
