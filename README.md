@@ -67,7 +67,7 @@ We now add alerting to our setup. Prometheus itself evaluates "alert rules" (htt
 
 There is a pseudo-mail-server configured in this session to see how genereated mail alerts look like.
 
-An alert rule for Redis is configured in ```config/prometheus/redis.rules```. When we stop the Redis-server using ```docker-compose -p training stop redis-server``` we will see an alert firing in Prometheus, being forwarded to the Alertmanager and then snet out by mail.
+An alert rule for Redis is configured in ```config/prometheus/redis.rules```. When we stop the Redis-server using ```docker-compose stop redis-server``` we will see an alert firing in Prometheus, being forwarded to the Alertmanager and then snet out by mail.
 
 ### 06_Adding_Thanos
 
