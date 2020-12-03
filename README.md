@@ -97,19 +97,19 @@ For minio use the credentials ```key:secretkey```. For Grafana use the credentia
 
 ```
 cd YOUR_DESIRED_LESSON
-docker-compose -p training up
+docker-compose up
 ```
 
 ### Stopping a training session
 
 ```
-docker-compose -p training down
+docker-compose down
 ```
 
 ### Stopping the Redis server
 
 ```
-docker-compose -p training stop redis-server
+docker-compose stop redis-server
 ```
 
 ### Sending SIGHUP to a container
@@ -121,5 +121,5 @@ docker kill --signal=HUP <container_id>
 ### Cleaning up after the last session
 
 ```
-docker-compose -p training down -v
+docker-compose down -v
 ```
