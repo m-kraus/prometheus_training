@@ -99,7 +99,7 @@ services:
       - ./config/alertmanager:/etc/alertmanager
 
   mailhog:
-    image: mailhog/mailhog:v1.0.0
+    image: mailhog/mailhog:v1.0.1
     ports:
       - 11025:1025 # SMTP
       - 18025:8025 # HTTP
