@@ -10,7 +10,7 @@ Requirements: you need to have ```docker``` and ```docker-compose``` installed (
 
 ![01_First_steps](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/images/01.svg?sanitize=true)
 
-This first step configures a Prometheus instance, that monitorins itself and a Grafana instance, which is connected to Prometheus.
+This first step configures a Prometheus instance, that monitors itself and a Grafana instance, which is connected to Prometheus.
 
 See https://prometheus.io/docs/prometheus/latest/configuration/configuration for Prometheus basic configuration options.
 
@@ -67,7 +67,7 @@ We now add alerting to our setup. Prometheus itself evaluates "alert rules" (htt
 
 There is a pseudo-mail-server configured in this session to see how genereated mail alerts look like.
 
-An alert rule for Redis is configured in ```confog/prometheus/redis.rules```. When we stop the Redis-server using ```docker-compose -p training stop redis-server``` we will see an alert firing in Prometheus, being forwarded to the Alertmanager and then snet out by mail.
+An alert rule for Redis is configured in ```config/prometheus/redis.rules```. When we stop the Redis-server using ```docker-compose -p training stop redis-server``` we will see an alert firing in Prometheus, being forwarded to the Alertmanager and then snet out by mail.
 
 ### 06_Adding_Thanos
 
