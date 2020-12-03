@@ -85,7 +85,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "max(max_over_time(redis_uptime_in_seconds{addr=\"$addr\"}[$__interval]))",
+          "expr": "max(max_over_time(redis_uptime_in_seconds{instance=\"$instance\"}[$__interval]))",
           "intervalFactor": 2,
           "legendFormat": "",
           "metric": "",
@@ -172,7 +172,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "redis_connected_clients{addr=\"$addr\"}",
+          "expr": "redis_connected_clients{instance=\"$instance\"}",
           "intervalFactor": 2,
           "legendFormat": "",
           "metric": "",
@@ -261,7 +261,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "100 * (redis_memory_used_bytes{addr=~\"$addr\"}  / redis_memory_max_bytes{addr=~\"$addr\"} )",
+          "expr": "100 * (redis_memory_used_bytes{instance=~\"$instance\"}  / redis_memory_max_bytes{instance=~\"$instance\"} )",
           "intervalFactor": 2,
           "legendFormat": "",
           "metric": "",
@@ -325,7 +325,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(redis_commands_processed_total{addr=~\"$addr\"}[5m])",
+          "expr": "rate(redis_commands_processed_total{instance=~\"$instance\"}[5m])",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "",
@@ -419,7 +419,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(redis_keyspace_hits_total{addr=\"$addr\"}[5m])",
+          "expr": "irate(redis_keyspace_hits_total{instance=\"$instance\"}[5m])",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
@@ -430,7 +430,7 @@
           "target": ""
         },
         {
-          "expr": "irate(redis_keyspace_misses_total{addr=\"$addr\"}[5m])",
+          "expr": "irate(redis_keyspace_misses_total{instance=\"$instance\"}[5m])",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
@@ -528,7 +528,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "redis_memory_used_bytes{addr=~\"$addr\"} ",
+          "expr": "redis_memory_used_bytes{instance=~\"$instance\"} ",
           "intervalFactor": 2,
           "legendFormat": "used",
           "metric": "",
@@ -537,7 +537,7 @@
           "target": ""
         },
         {
-          "expr": "redis_memory_max_bytes{addr=~\"$addr\"} ",
+          "expr": "redis_memory_max_bytes{instance=~\"$instance\"} ",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "max",
@@ -628,14 +628,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(redis_net_input_bytes_total{addr=\"$addr\"}[5m])",
+          "expr": "rate(redis_net_input_bytes_total{instance=\"$instance\"}[5m])",
           "intervalFactor": 2,
           "legendFormat": "{{ input }}",
           "refId": "A",
           "step": 240
         },
         {
-          "expr": "rate(redis_net_output_bytes_total{addr=\"$addr\"}[5m])",
+          "expr": "rate(redis_net_output_bytes_total{instance=\"$instance\"}[5m])",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{ output }}",
@@ -728,7 +728,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (redis_db_keys{addr=~\"$addr\"}) by (db)",
+          "expr": "sum (redis_db_keys{instance=~\"$instance\"}) by (db)",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{ db }} ",
@@ -820,7 +820,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (redis_db_keys{addr=~\"$addr\"}) - sum (redis_db_keys_expiring{addr=~\"$addr\"}) ",
+          "expr": "sum (redis_db_keys{instance=~\"$instance\"}) - sum (redis_db_keys_expiring{instance=~\"$instance\"}) ",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "not expiring",
@@ -829,7 +829,7 @@
           "target": ""
         },
         {
-          "expr": "sum (redis_db_keys_expiring{addr=~\"$addr\"}) ",
+          "expr": "sum (redis_db_keys_expiring{instance=~\"$instance\"}) ",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "expiring",
@@ -930,7 +930,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(redis_expired_keys_total{addr=~\"$addr\"}[5m])) by (addr)",
+          "expr": "sum(rate(redis_expired_keys_total{instance=~\"$instance\"}[5m])) by (instance)",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "expired",
@@ -940,7 +940,7 @@
           "target": ""
         },
         {
-          "expr": "sum(rate(redis_evicted_keys_total{addr=~\"$addr\"}[5m])) by (addr)",
+          "expr": "sum(rate(redis_evicted_keys_total{instance=~\"$instance\"}[5m])) by (instance)",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "evicted",
@@ -1031,7 +1031,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "topk(5, irate(redis_commands_total{addr=~\"$addr\"} [1m]))",
+          "expr": "topk(5, irate(redis_commands_total{instance=~\"$instance\"} [1m]))",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{ cmd }}",
@@ -1104,9 +1104,9 @@
         "includeAll": false,
         "label": null,
         "multi": false,
-        "name": "addr",
+        "name": "instance",
         "options": [],
-        "query": "label_values(redis_up, addr)",
+        "query": "label_values(redis_up, instance)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
