@@ -75,6 +75,8 @@ An alert rule for Redis is configured in ```config/prometheus/redis.rules```. Wh
 
 Our next step is to add Thanos (https://github.com/improbable-eng/thanos) to the session. Thanos adds easy long-term-storage - e.g. to Amazon S3 - to Prometheus, as well as HA capabilities and possibilites to group multiple Prometheus instances into a fleet-wide overview. See https://github.com/m-kraus/prometheus_experiments/tree/master/thanos for a more detailed setup.
 
+Dependent containers are hard to achieve in docker-compose, so please execute ``docker-compose start thanos-store`` if the thanos-store dies, because min.io is not yet available.
+
 ### 07_DNS_service_discovery
 
 ![07_DNS_service_discovery](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/images/07.svg?sanitize=true)
