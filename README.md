@@ -83,7 +83,7 @@ Dependent containers are hard to achieve in docker-compose, so please execute ``
 
 In the last step we will get to know how (DNS-)service discovary works. We took node-exporter out of the file_sd targets in ```config/prometheus/targets``` and added a ```dns_sd_configs``` section in the Prometheus configuration file ```config/prometheus/prometheus.yml```
 
-We search for DNS A records with the value ```node-exporter```. After starting the session, Prometheus discovers one node-exporter. After scaling it to multiple replicas with ```docker-compose -p training scale node-exporter=3``` Prometheus will discover after a short time all 3 instances and scrape them separately.
+We search for DNS A records with the value ```node-exporter```. After starting the session, Prometheus discovers one node-exporter. After scaling it to multiple replicas with ```docker-compose scale node-exporter=3``` Prometheus will discover after a short time all 3 instances and scrape them separately.
 
 ## Accessing the components
 
