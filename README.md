@@ -29,6 +29,10 @@ In this step we also change Prometheus configuration to use file-based service d
 
 In this step we add Minio (https://min.io/) - an open-source S3-compatible storage - as an example of applications, which are already instrumented to deliver Prometheus metrics. Applications of this type offer an HTTP endpoint from which metrics can be scraped.
 
+Please note, that we switched to Prometheus service discovery here - via https://prometheus.io/docs/prometheus/latest/configuration/configuration/#file_sd_config We now put short JSON stanzas for each scrape target into the ``config/prometheus/targets`` folder.
+
+See https://docs.min.io/docs/how-to-monitor-minio-using-prometheus.html for more info about monitoring min.io with prometheus.
+
 ### 04_Adding_applications_through_exporters
 
 ![04_Adding_applications_through_exporters](https://raw.githubusercontent.com/m-kraus/prometheus_training/master/images/04.svg?sanitize=true)
